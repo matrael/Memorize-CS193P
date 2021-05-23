@@ -9,18 +9,49 @@ import SwiftUI
 
 struct ContentView: View {
     var emojis = ["✈️", "🛳", "🚀", "🚝", "🚛", "🚜", "🛴", "🚲", "🛵", "🏍", "🛺", "🚍", "🚘", "🚂", "🚁", "🛶", "⛴", "🚢", "🛸", "🛩", "🚗"]
-    var emojiCount = 5
+    @State var emojiCount = 5
     
     var body: some View {
         VStack {
-        HStack {
-            ForEach(emojis[0..<emojiCount], id: \.self) { emoji in
-                CardView(content: emoji)
+            ScrollView {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 65))]) {
+                    ForEach(emojis[0..<emojiCount], id: \.self) { emoji in
+                        CardView(content: emoji)
+                            .aspectRatio(2/3, contentMode: .fit)
+                    }
+                }
             }
-        }
+            
+            .foregroundColor(/*@START_MENU_TOKEN@*/.red/*@END_MENU_TOKEN@*/)
+            Spacer()
+            HStack {
+                remove
+                Spacer()
+                add
+            }
+            .font(.largeTitle)
+            .padding(.horizontal)
         }
         .padding(/*@START_MENU_TOKEN@*/.horizontal/*@END_MENU_TOKEN@*/)
-        .foregroundColor(/*@START_MENU_TOKEN@*/.red/*@END_MENU_TOKEN@*/)
+    }
+    
+    var remove: some View {
+        Button(action: {
+            if emojiCount > 1 {
+                emojiCount -= 1
+            }
+        }, label: {
+            Image(systemName: "minus.circle.fill")
+        })
+    }
+    var add: some View {
+        Button(action: {
+            if emojiCount < emojis.count {
+                emojiCount += 1
+            }
+        }, label: {
+            Image(systemName: "plus.circle.fill")
+        })
     }
 }
 
@@ -32,7 +63,7 @@ struct CardView: View {
             let shape = RoundedRectangle(cornerRadius: /*@START_MENU_TOKEN@*/25.0/*@END_MENU_TOKEN@*/)
             if isFaceUp {
                 shape.fill().foregroundColor(.white)
-                shape.stroke(lineWidth: 3.0)
+                shape.strokeBorder(lineWidth: 3.0)
                 Text(content)
                     .font(.largeTitle)
                     .foregroundColor(.orange)
